@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" href="https://i.imgflip.com/aid1vh.jpg" />
+
+  <title>Please Be My Valentine</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+      touch-action: manipulation;
+    }
+
+    #main-meme {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      padding: 0 20px;
+      min-height: 60px;
+    }
+
+    .btn-container {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      border: 3px solid black;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #btn-yes {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 40px;
+      font-size: 24px;
+      z-index: 10;
+    }
+
+    #btn-no {
+      background-color: #f44336;
+      color: white;
+      padding: 15px 40px;
+      font-size: 24px;
+      position: absolute;
+      z-index: 20;
+    }
+
+    #victory {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    #victory img {
+      max-width: 90%;
+      border: 5px solid #4CAF50;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <img id="main-meme"
+    src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXFpOWpyZ3o3Z3NxZWh5MGdiYjdyOXcxaG50dXpqbjZicG55OGs1aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3SScK6qI3ENrlHhPaI/giphy.gif"
+    alt="Asking Meme">
+
+  <h1 id="main-text">Will you be my Valentine?</h1>
+
+  <div class="btn-container">
+    <button id="btn-yes" onclick="sayYes()" onmouseover="cheer()" onmouseout="restore()">YES</button>
+    <button id="btn-no" onmouseover="dodge()" ontouchstart="dodge()" onclick="dodge()">NO</button>
+  </div>
+
+  <div id="victory">
+    <img
+      src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cXhmdzlkMml0cHpiYWVxOGd6dzdxa3Z2dWMwaHdmejhvZTF0YzN4ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Zl7u48zLVFgLpRwq6f/giphy.gif"
+      alt="Celebration">
+    <h1 style="color: #4CAF50; margin-top: 20px;">YAY! IT'S A DATE! ❤️</h1>
+  </div>
+
+  <script>
+    const btnNo = document.getElementById('btn-no');
+    const btnYes = document.getElementById('btn-yes');
+    const mainImage = document.getElementById('main-meme');
+    const mainText = document.getElementById('main-text');
+
+    const alternatives = [
+      {
+        text: "Don't do this to the cat :(",
+        image: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmEwN3JmNWl3cDl2Znd0OXFlbW4zcWt0dXFjMWY1OHVwaXQybTlxOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/fFa05KbZowXiEIyRse/giphy.gif"
+      },
+      {
+        text: "Look at those big sad eyes...",
+        image: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmRrdjhla2N2MnFzbTczNjFmcnNyaDB0YnJjMzI2bWVhZ2doN3lpOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/P53TSsopKicrm/giphy.gif"
+      },
+      {
+        text: "I'm laughing but I'm crying inside.",
+        image: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmEwN3JmNWl3cDl2Znd0OXFlbW4zcWt0dXFjMWY1OHVwaXQybTlxOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/fOQs20FLdvINW/giphy.gif"
+      },
+      {
+        text: "You're breaking my heart!",
+        image: "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bnd1anpydWxnYnNlaWo4azl6Y3ZweTYzaWNzdDgyZTB4M2I3MWoxbyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/98MaHVwJOmWMz4cz1K/giphy.gif"
+      },
+      {
+        text: "Fine, I'll just sit here alone.",
+        image: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGkzZzZ2YThscnA4a3lrZjQ0NmNjaW15bGd2am9vazh1NWlnYWE4NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/t4lW2qMo119cHlfnNY/giphy.gif"
+      },
+      {
+        text: "Why are you being so mean?",
+        image: "https://media.giphy.com/media/zCpYQh5YVhdI1rVYpE/giphy.gif"
+      }
+    ];
+
+
+    let availableIndices = [];
+
+    let noScale = 1.0;
+    let yesScale = 1.0;
+
+    function dodge() {
+      if (availableIndices.length === 0) {
+        availableIndices = Array.from({ length: alternatives.length }, (_, i) => i);
+      }
+
+      const randomIndex = Math.floor(Math.random() * availableIndices.length);
+      const actualIndex = availableIndices[randomIndex];
+
+      availableIndices.splice(randomIndex, 1);
+
+      const pair = alternatives[actualIndex];
+
+      mainText.innerText = pair.text;
+      mainImage.src = pair.image;
+
+      noScale -= 0.1;
+      btnNo.style.transform = `scale(${noScale})`;
+
+      yesScale += 0.1;
+      btnYes.style.transform = `scale(${yesScale})`;
+
+      moveNoButton();
+
+      if (noScale < 0.3) {
+        btnNo.style.display = "none";
+        mainImage.src = "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzYzYmVpODM5dm82NDYyNDVkYmN1a3dqZXpxcDN6YzI1aTRlNnV2aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kd9BlRovbPOykLBMqX/giphy.gif";
+
+        mainText.innerText = "You have no choice now.";
+
+        btnYes.style.transform = "scale(2)";
+      }
+    }
+
+    function moveNoButton() {
+      const yesRect = btnYes.getBoundingClientRect();
+
+      const maxX = window.innerWidth - btnNo.offsetWidth;
+      const maxY = window.innerHeight - btnNo.offsetHeight;
+
+      let newX, newY;
+      let overlap = true;
+      let attempts = 0;
+
+      while (overlap && attempts < 50) {
+        newX = Math.random() * maxX;
+        newY = Math.random() * maxY;
+
+        const noLeft = newX;
+        const noRight = newX + btnNo.offsetWidth;
+        const noTop = newY;
+        const noBottom = newY + btnNo.offsetHeight;
+
+        const buffer = 20;
+
+        const isOverlapping = !(
+          noRight < yesRect.left - buffer ||
+          noLeft > yesRect.right + buffer ||
+          noBottom < yesRect.top - buffer ||
+          noTop > yesRect.bottom + buffer
+        );
+
+        if (!isOverlapping) {
+          overlap = false;
+        }
+
+        attempts++;
+      }
+
+      btnNo.style.position = "fixed";
+      btnNo.style.left = newX + "px";
+      btnNo.style.top = newY + "px";
+    }
+
+    function preloadImages() {
+      alternatives.forEach(item => {
+        const img = new Image();
+        img.src = item.image;
+      });
+
+      const askImage = new Image();
+      askImage.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXFpOWpyZ3o3Z3NxZWh5MGdiYjdyOXcxaG50dXpqbjZicG55OGs1aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3SScK6qI3ENrlHhPaI/giphy.gif";
+
+      const victoryImg = new Image();
+      victoryImg.src = "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cXhmdzlkMml0cHpiYWVxOGd6dzdxa3Z2dWMwaHdmejhvZTF0YzN4ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Zl7u48zLVFgLpRwq6f/giphy.gif";
+
+      const endImg = new Image();
+      endImg.src = "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzYzYmVpODM5dm82NDYyNDVkYmN1a3dqZXpxcDN6YzI1aTRlNnV2aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kd9BlRovbPOykLBMqX/giphy.gif";
+    }
+
+    function cheer() {
+      mainText.innerText = "Yeesss! Click it! ❤️";
+      mainImage.src = "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzYzYmVpODM5dm82NDYyNDVkYmN1a3dqZXpxcDN6YzI1aTRlNnV2aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kd9BlRovbPOykLBMqX/giphy.gif";
+    }
+
+    function restore() {
+      mainText.innerText = "Will you be my Valentine?";
+      mainImage.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXFpOWpyZ3o3Z3NxZWh5MGdiYjdyOXcxaG50dXpqbjZicG55OGs1aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3SScK6qI3ENrlHhPaI/giphy.gif";
+    }
+
+    function sayYes() {
+      const victoryAudio = new Audio('yippi.mp3');
+
+      victoryAudio.volume = 0.5;
+      victoryAudio.play();
+
+      document.getElementById('victory').style.display = 'flex';
+    }
+
+    moveNoButton();
+
+    preloadImages();
+
+  </script>
