@@ -57,7 +57,7 @@
     }
 
     #btn-yes {
-      background-color: #4CAF50;
+      background-color: #ff69b4;
       color: white;
       padding: 15px 40px;
       font-size: 24px;
@@ -112,7 +112,7 @@
     <img
       src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cXhmdzlkMml0cHpiYWVxOGd6dzdxa3Z2dWMwaHdmejhvZTF0YzN4ZSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Zl7u48zLVFgLpRwq6f/giphy.gif"
       alt="Celebration">
-    <h1 style="color: #4CAF50; margin-top: 20px;">YAY! IT'S A DATE! ❤️</h1>
+    <h1 style="color: #4CAF50; margin-top: 20px;" id="victory-text">YAY! IT'S A DATE!</h1>
   </div>
 
   <script>
@@ -120,6 +120,19 @@
     const btnYes = document.getElementById('btn-yes');
     const mainImage = document.getElementById('main-meme');
     const mainText = document.getElementById('main-text');
+    const victoryText = document.getElementById('victory-text');
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const customQuestion = urlParams.get('q') || "Will you be my Valentine?";
+    const customYes = urlParams.get('y') || "YES";
+    const customNo = urlParams.get('n') || "NO";
+    const customSuccess = urlParams.get('s') || "YAY! IT'S A DATE!";
+
+    mainText.innerText = customQuestion;
+    victoryText.innerText = customSuccess;
+    btnYes.innerText = customYes;
+    btnNo.innerText = customNo;
 
     const alternatives = [
       {
@@ -177,11 +190,11 @@
 
       moveNoButton();
 
-      if (noScale < 0.3) {
+      if (noScale < 0.4) {
         btnNo.style.display = "none";
         mainImage.src = "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzYzYmVpODM5dm82NDYyNDVkYmN1a3dqZXpxcDN6YzI1aTRlNnV2aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kd9BlRovbPOykLBMqX/giphy.gif";
 
-        mainText.innerText = "You have no choice now.";
+        mainText.innerText = "You have no choice now :)";
 
         btnYes.style.transform = "scale(2)";
       }
@@ -189,6 +202,8 @@
 
     function moveNoButton() {
       const yesRect = btnYes.getBoundingClientRect();
+      const imageRect = mainImage.getBoundingClientRect();
+      const textRect = mainText.getBoundingClientRect();
 
       const maxX = window.innerWidth - btnNo.offsetWidth;
       const maxY = window.innerHeight - btnNo.offsetHeight;
@@ -197,7 +212,7 @@
       let overlap = true;
       let attempts = 0;
 
-      while (overlap && attempts < 50) {
+      while (overlap && attempts < 100) {
         newX = Math.random() * maxX;
         newY = Math.random() * maxY;
 
@@ -208,14 +223,28 @@
 
         const buffer = 20;
 
-        const isOverlapping = !(
+        const overlapYes = !(
           noRight < yesRect.left - buffer ||
           noLeft > yesRect.right + buffer ||
           noBottom < yesRect.top - buffer ||
           noTop > yesRect.bottom + buffer
         );
 
-        if (!isOverlapping) {
+        const overlapImage = !(
+          noRight < imageRect.left - buffer ||
+          noLeft > imageRect.right + buffer ||
+          noBottom < imageRect.top - buffer ||
+          noTop > imageRect.bottom + buffer
+        );
+
+        const overlapText = !(
+          noRight < textRect.left - buffer ||
+          noLeft > textRect.right + buffer ||
+          noBottom < textRect.top - buffer ||
+          noTop > textRect.bottom + buffer
+        );
+
+        if (!overlapYes && !overlapImage && !overlapText) {
           overlap = false;
         }
 
@@ -243,12 +272,23 @@
       endImg.src = "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzYzYmVpODM5dm82NDYyNDVkYmN1a3dqZXpxcDN6YzI1aTRlNnV2aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kd9BlRovbPOykLBMqX/giphy.gif";
     }
 
+    const cheerAudio = new Audio('holdup.mp3');
+    cheerAudio.volume = 0.5;
+
     function cheer() {
-      mainText.innerText = "Yeesss! Click it! ❤️";
+      cheerAudio.pause();
+      cheerAudio.currentTime = 0;
+
+      cheerAudio.play().catch(e => console.log("Audio waiting for interaction"));
+
+      mainText.innerText = "Yeesss! Click it! ";
       mainImage.src = "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzYzYmVpODM5dm82NDYyNDVkYmN1a3dqZXpxcDN6YzI1aTRlNnV2aiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/kd9BlRovbPOykLBMqX/giphy.gif";
     }
 
     function restore() {
+      cheerAudio.pause();
+      cheerAudio.currentTime = 0;
+
       mainText.innerText = "Will you be my Valentine?";
       mainImage.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXFpOWpyZ3o3Z3NxZWh5MGdiYjdyOXcxaG50dXpqbjZicG55OGs1aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3SScK6qI3ENrlHhPaI/giphy.gif";
     }
