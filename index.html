@@ -293,8 +293,13 @@
     }
 
     function sayYes() {
-      const victoryAudio = new Audio('yippi.mp3');
+      cheerAudio.pause();
+      cheerAudio.currentTime = 0;
 
+      btnYes.onmouseover = null;
+      btnYes.onmouseout = null;
+
+      const victoryAudio = new Audio('yippi.mp3');
       victoryAudio.volume = 0.5;
       victoryAudio.play();
 
