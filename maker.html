@@ -122,7 +122,9 @@
         s: s
       });
 
-      const baseUrl = window.location.origin + window.location.pathname;
+      const path = window.location.pathname;
+      const directory = path.substring(0, path.lastIndexOf('/') + 1);
+      const baseUrl = window.location.origin + directory;
 
       const finalUrl = `${baseUrl}?${params.toString()}`;
 
