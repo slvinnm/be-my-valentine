@@ -122,7 +122,8 @@
         s: s
       });
 
-      const baseUrl = window.location.href.replace('maker.html', '');
+      const baseUrl = window.location.origin + window.location.pathname;
+
       const finalUrl = `${baseUrl}?${params.toString()}`;
 
       const linkElement = document.getElementById('generated-link');
